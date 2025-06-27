@@ -40,3 +40,16 @@ router.post('/', async (req,res)=>{
     }
     
   })
+
+//to delete the feedback owned by that user 
+  router.delete('/:id', async (req, res) => {
+  try {
+    const feedback = await Feedback.findOne({ _id: req.params.id, user: req.user.userId });
+    if (!feedback) return res.status(404).json({ message: 'Feedback not found or unauthorized' });
+
+    await Feedback.findByIdAndDelete(req.params.id);
+    res.json({ message: 'Deleted successfully' });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
